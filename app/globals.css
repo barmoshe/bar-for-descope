@@ -1,0 +1,18 @@
+/* Minimal document base. The page surface is painted by `.dsc-root` in
+   src/marketing/descope/descope.css; here we only zero the document margins
+   and set the deep navy behind the app (Descope's hero ink) so there is no
+   white flash before the React tree mounts. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: #0a101a; /* --dsc-ink */
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100svh;
+}

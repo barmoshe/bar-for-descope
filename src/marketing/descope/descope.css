@@ -1,0 +1,774 @@
+/* =============================================================
+   bar-for-descope — ad-hoc application page for Bar Moshe -> Descope
+   (Full-Stack Software Engineer · Tel Aviv · hybrid).
+
+   Brand READ LIVE off descope.com (computed styles, 2026-07-02):
+   ink #0A101A, mint #7DEDED (primary accent / CTA pill, ink text on mint),
+   navy pill #253754, light surface #F9FAFB, Roobert (proprietary — Hanken
+   Grotesk is the free near-match at display weight 500). Fully-rounded pills
+   (24px). Signature motif: the horizontal "identity-journey" flow — colored-
+   border node cards (blue / orange / purple) wired by curved connector lines,
+   over a dark radial-glow navy backdrop, with a dark logo/trust wall below.
+
+   Mounts `.mp-root` for the marketing reset/focus base, then overrides
+   everything here via `.dsc-root`. Colours are explicit hex (verified brand
+   values) so nothing site-wide ever shifts them.
+   ============================================================= */
+
+.dsc-root {
+  --dsc-ink:          #0a101a;   /* deepest navy — hero bg, ink text on light */
+  --dsc-navy:         #101a2c;   /* hero mid tone */
+  --dsc-navy-2:       #253754;   /* secondary pill / dark surface */
+  --dsc-bg:           #f9fafb;   /* light section surface */
+  --dsc-surface:      #ffffff;   /* raised card */
+  --dsc-tint:         #f1f5f9;   /* cool inset tint */
+
+  --dsc-body:         #46536b;   /* long-form copy on light */
+  --dsc-muted:        #7a8699;   /* secondary on light */
+
+  --dsc-mint:         #7deded;   /* primary accent / CTA */
+  --dsc-mint-deep:    #5cd9d9;   /* CTA hover */
+  --dsc-mint-ink:     #0a3b3b;   /* deep teal for mint text on light */
+
+  --dsc-blue:         #4c7ff0;   /* flow node accent */
+  --dsc-orange:       #e8862e;   /* flow node accent */
+  --dsc-purple:       #8b7cf0;   /* flow node accent */
+
+  --dsc-line:         #e4e9f0;   /* hairline on light */
+  --dsc-line-2:       #d3dbe6;
+  --dsc-on-dark:      #eef3f8;   /* text on dark */
+  --dsc-on-dark-soft: rgba(238, 243, 248, 0.72);
+  --dsc-dark-line:    rgba(238, 243, 248, 0.14);
+
+  --dsc-shadow:       0 26px 60px -32px rgba(10, 16, 26, 0.55);
+  --dsc-shadow-soft:  0 16px 44px -28px rgba(10, 16, 26, 0.35);
+
+  --dsc-mono:         var(--font-dsc-mono), "JetBrains Mono", ui-monospace, monospace;
+
+  /* the hero radial-glow backdrop (their dark hero: a lighter navy bloom
+     centred high, fading to near-black, with a faint mint wash low). */
+  --dsc-hero-bg:
+    radial-gradient(58rem 34rem at 50% 8%, #1a2942 0%, transparent 60%),
+    radial-gradient(42rem 30rem at 82% 84%, rgba(125, 237, 237, 0.10), transparent 60%),
+    radial-gradient(40rem 30rem at 12% 78%, rgba(76, 127, 240, 0.10), transparent 62%),
+    var(--dsc-ink);
+
+  background: var(--dsc-bg);
+  color: var(--dsc-body);
+  min-block-size: 100svh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "calt";
+}
+
+/* Font overrides. `.dsc-root.mp-root` (0,2,0) beats `.mp-root` (the serif
+   default) — the tenable / cytactic technique. */
+.dsc-root.mp-root {
+  font-family: var(--font-dsc-body), Inter, system-ui, -apple-system, sans-serif;
+  --mp-font-body: var(--font-dsc-body), Inter, system-ui, sans-serif;
+  --mp-font-display: var(--font-dsc-display), "Hanken Grotesk", system-ui, sans-serif;
+  --mp-font-hero: var(--font-dsc-display), "Hanken Grotesk", system-ui, sans-serif;
+}
+.dsc-root.mp-root :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-dsc-display), "Hanken Grotesk", system-ui, sans-serif;
+  /* Descope sets display type at weight 500. */
+  font-weight: 500;
+  color: var(--dsc-ink);
+}
+
+.dsc-root a.dsc-skip,
+.dsc-skip {
+  position: absolute;
+  inset-block-start: -48px;
+  inset-inline-start: 12px;
+  z-index: 200;
+  background: var(--dsc-mint);
+  color: var(--dsc-mint-ink);
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.dsc-skip:focus-visible { inset-block-start: 12px; }
+
+/* ── The hexagon-key mark ──────────────────────────────────── */
+.dsc-mark { display: block; inline-size: 1em; block-size: 1em; overflow: visible; }
+.dsc-mark__hex { fill: none; stroke: var(--dsc-mint); stroke-width: 6; stroke-linejoin: round; }
+.dsc-mark__key circle { fill: var(--dsc-mint); }
+.dsc-mark__key rect { fill: var(--dsc-mint); opacity: 0.9; }
+@media (prefers-reduced-motion: no-preference) {
+  .dsc-mark--float { animation: dsc-float 7s ease-in-out infinite; }
+}
+@keyframes dsc-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ── Navigation — dark ink bar, sticky ─────────────────────── */
+.dsc-nav {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 100;
+  background: rgba(10, 16, 26, 0.82);
+  backdrop-filter: blur(10px);
+  border-block-end: 1px solid var(--dsc-dark-line);
+}
+.dsc-nav__inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-inline-size: 1160px;
+  margin-inline: auto;
+  padding: 14px 22px;
+}
+.dsc-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.dsc-nav__mark { font-size: 26px; }
+.dsc-wordmark {
+  font-family: var(--font-dsc-display), "Hanken Grotesk", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.06rem;
+  letter-spacing: -0.01em;
+  color: var(--dsc-on-dark);
+}
+.dsc-nav__tag {
+  font-family: var(--dsc-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--dsc-mint);
+  border: 1px solid var(--dsc-dark-line);
+  background: rgba(125, 237, 237, 0.06);
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+.dsc-nav__links {
+  display: flex;
+  gap: 2px;
+  margin-inline-start: auto;
+}
+.dsc-root a.dsc-nav__link,
+.dsc-nav__link {
+  color: var(--dsc-on-dark-soft);
+  text-decoration: none;
+  font-size: 0.94rem;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+.dsc-root a.dsc-nav__link:hover,
+.dsc-nav__link:hover { color: var(--dsc-on-dark); background: rgba(238, 243, 248, 0.08); }
+.dsc-nav__cta { display: flex; align-items: center; gap: 8px; margin-inline-start: 4px; }
+.dsc-nav__short { display: none; }
+@media (max-width: 900px) {
+  .dsc-nav__links { display: none; }
+  .dsc-nav__cta { margin-inline-start: auto; }
+  .dsc-nav__full { display: none; }
+  .dsc-nav__short { display: inline; }
+  .dsc-nav__tag { display: none; }
+}
+
+/* ── Buttons — Descope's fully-rounded pills ───────────────── */
+.dsc-root a.dsc-btn,
+.dsc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.4;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease,
+    border-color 0.18s ease, color 0.18s ease;
+}
+.dsc-btn--sm { padding: 9px 16px; font-size: 0.88rem; }
+/* mint primary — ink text on mint */
+.dsc-root a.dsc-btn--primary,
+.dsc-btn--primary {
+  background: var(--dsc-mint);
+  color: var(--dsc-mint-ink);
+}
+.dsc-root a.dsc-btn--primary:hover,
+.dsc-btn--primary:hover {
+  background: var(--dsc-mint-deep);
+  transform: translateY(-1px);
+  color: var(--dsc-mint-ink);
+}
+/* ghost on light */
+.dsc-root a.dsc-btn--ghost,
+.dsc-btn--ghost {
+  color: var(--dsc-ink);
+  border-color: var(--dsc-line-2);
+  background: var(--dsc-surface);
+}
+.dsc-root a.dsc-btn--ghost:hover,
+.dsc-btn--ghost:hover { border-color: var(--dsc-muted); transform: translateY(-1px); color: var(--dsc-ink); }
+/* translucent dark secondary (nav + hero, on dark) */
+.dsc-root a.dsc-btn--dark,
+.dsc-btn--dark {
+  color: var(--dsc-on-dark);
+  background: rgba(37, 55, 84, 0.55);
+  border-color: var(--dsc-dark-line);
+}
+.dsc-root a.dsc-btn--dark:hover,
+.dsc-btn--dark:hover { background: rgba(37, 55, 84, 0.85); color: var(--dsc-on-dark); transform: translateY(-1px); }
+/* close-band pills on dark reuse mint + dark-ghost */
+.dsc-root a.dsc-btn--oninvert,
+.dsc-btn--oninvert {
+  background: var(--dsc-mint);
+  color: var(--dsc-mint-ink);
+}
+.dsc-root a.dsc-btn--oninvert:hover,
+.dsc-btn--oninvert:hover { background: var(--dsc-mint-deep); transform: translateY(-1px); color: var(--dsc-mint-ink); }
+.dsc-root a.dsc-btn--oninvert-ghost,
+.dsc-btn--oninvert-ghost {
+  color: var(--dsc-on-dark);
+  background: rgba(238, 243, 248, 0.06);
+  border-color: var(--dsc-dark-line);
+}
+.dsc-root a.dsc-btn--oninvert-ghost:hover,
+.dsc-btn--oninvert-ghost:hover { border-color: rgba(238, 243, 248, 0.3); transform: translateY(-1px); color: var(--dsc-on-dark); }
+.dsc-btn__arrow { transition: transform 0.18s ease; }
+.dsc-btn--primary:hover .dsc-btn__arrow,
+.dsc-btn--oninvert:hover .dsc-btn__arrow { transform: translateX(3px); }
+
+/* ── Hero — dark navy, centred, flow beneath ───────────────── */
+.dsc-hero {
+  position: relative;
+  background: var(--dsc-hero-bg);
+  overflow: hidden;
+}
+.dsc-hero__inner {
+  position: relative;
+  z-index: 1;
+  max-inline-size: 1160px;
+  margin-inline: auto;
+  padding: 80px 22px 20px;
+  inline-size: 100%;
+}
+.dsc-hero__copy {
+  max-inline-size: 880px;
+  margin-inline: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.dsc-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--dsc-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--dsc-mint);
+  margin-block-end: 22px;
+}
+.dsc-eyebrow__dot {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 50%;
+  background: var(--dsc-mint);
+  box-shadow: 0 0 12px 1px rgba(125, 237, 237, 0.7);
+}
+/* h1 lives on the dark hero — white, weight 500, ~64px */
+.dsc-root.mp-root .dsc-hero :where(h1) { color: #fff; }
+.dsc-title {
+  font-size: clamp(2.5rem, 6.2vw, 4.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  margin: 0 0 22px;
+}
+/* mint underline highlight, their exact hero treatment */
+.dsc-hl {
+  color: #fff;
+  background-image: linear-gradient(var(--dsc-mint), var(--dsc-mint));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 100% 3px;
+  padding-block-end: 2px;
+}
+.dsc-lede {
+  font-size: clamp(1.02rem, 1.6vw, 1.18rem);
+  line-height: 1.6;
+  max-inline-size: 60ch;
+  margin: 0 auto 32px;
+  color: var(--dsc-on-dark-soft);
+}
+.dsc-hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-block-end: 26px;
+}
+.dsc-hero__trust {
+  font-size: 0.88rem;
+  color: var(--dsc-on-dark-soft);
+  margin: 0;
+}
+.dsc-hero__trust strong { color: var(--dsc-on-dark); font-weight: 600; }
+
+/* the flow centerpiece sits inside the hero, on the same dark backdrop */
+.dsc-hero__flow {
+  position: relative;
+  z-index: 1;
+  max-inline-size: 1160px;
+  margin-inline: auto;
+  padding: 40px 22px 84px;
+}
+
+/* ── Trust strip — dark logo/trust wall (their register) ───── */
+.dsc-trust { background: var(--dsc-ink); border-block: 1px solid var(--dsc-dark-line); }
+.dsc-trust__inner {
+  max-inline-size: 1160px;
+  margin-inline: auto;
+  padding: 20px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 22px;
+  font-size: 0.88rem;
+  color: var(--dsc-on-dark-soft);
+}
+.dsc-trust__item b { color: var(--dsc-on-dark); font-weight: 600; }
+.dsc-trust__sep {
+  inline-size: 4px;
+  block-size: 4px;
+  border-radius: 50%;
+  background: rgba(238, 243, 248, 0.3);
+}
+@media (max-width: 640px) { .dsc-trust__sep { display: none; } }
+
+/* ── Sections ──────────────────────────────────────────────── */
+.dsc-section { padding-block: 96px; }
+.dsc-section--soft { background: var(--dsc-surface); border-block: 1px solid var(--dsc-line); }
+.dsc-wrap { max-inline-size: 1160px; margin-inline: auto; padding-inline: 22px; }
+.dsc-section__head {
+  max-inline-size: 760px;
+  margin-inline: auto;
+  margin-block-end: 52px;
+  text-align: center;
+}
+.dsc-kicker {
+  font-family: var(--dsc-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dsc-mint-ink);
+  margin: 0 0 14px;
+}
+.dsc-h2 {
+  font-size: clamp(1.9rem, 3.8vw, 2.8rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin: 0 0 16px;
+}
+.dsc-sub { font-size: 1.04rem; line-height: 1.65; margin: 0; color: var(--dsc-body); }
+
+/* ── The identity-journey flow — the centerpiece ───────────── */
+.dsc-flow {
+  border: 1px solid var(--dsc-dark-line);
+  border-radius: 22px;
+  background:
+    radial-gradient(40rem 20rem at 50% -10%, rgba(26, 41, 66, 0.9), transparent 70%),
+    rgba(10, 16, 26, 0.6);
+  box-shadow: var(--dsc-shadow);
+  overflow: hidden;
+}
+.dsc-flow__bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 18px;
+  border-block-end: 1px solid var(--dsc-dark-line);
+  background: rgba(37, 55, 84, 0.32);
+}
+.dsc-flow__dot { inline-size: 10px; block-size: 10px; border-radius: 50%; }
+.dsc-flow__dot:nth-child(1) { background: var(--dsc-blue); }
+.dsc-flow__dot:nth-child(2) { background: var(--dsc-orange); }
+.dsc-flow__dot:nth-child(3) { background: var(--dsc-mint); }
+.dsc-flow__name {
+  font-family: var(--dsc-mono);
+  font-size: 0.74rem;
+  color: var(--dsc-on-dark-soft);
+  margin-inline-start: 8px;
+}
+.dsc-flow__badge {
+  margin-inline-start: auto;
+  font-family: var(--dsc-mono);
+  font-size: 0.7rem;
+  color: var(--dsc-mint);
+  border: 1px solid var(--dsc-dark-line);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+.dsc-flow__stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: 12px;
+  font-family: var(--dsc-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--dsc-on-dark-soft);
+}
+.dsc-flow__pip {
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 50%;
+  background: var(--dsc-mint);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dsc-flow__pip { animation: dsc-pulse 1.4s ease-in-out infinite; }
+}
+@keyframes dsc-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.dsc-flow__stagelabel { color: var(--dsc-on-dark); }
+.dsc-flow__canvas {
+  position: relative;
+  padding: 34px 26px 38px;
+  overflow-x: auto;
+}
+.dsc-flow__svg {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 720px;
+  block-size: auto;
+}
+.dsc-flow__foot {
+  border-block-start: 1px solid var(--dsc-dark-line);
+  padding: 13px 18px;
+  font-size: 0.86rem;
+  color: var(--dsc-on-dark-soft);
+  text-align: center;
+}
+.dsc-flow__foot b { color: var(--dsc-on-dark); font-weight: 600; }
+
+/* flow-node SVG parts (their coloured-border cards + connector wires) */
+.dsc-node__box { fill: rgba(14, 22, 36, 0.92); stroke-width: 1.5; }
+.dsc-node__box--blue { stroke: var(--dsc-blue); }
+.dsc-node__box--orange { stroke: var(--dsc-orange); }
+.dsc-node__box--purple { stroke: var(--dsc-purple); }
+.dsc-node__box--mint { stroke: var(--dsc-mint); }
+.dsc-node__chip--blue { fill: rgba(76, 127, 240, 0.22); stroke: var(--dsc-blue); }
+.dsc-node__chip--orange { fill: rgba(232, 134, 46, 0.22); stroke: var(--dsc-orange); }
+.dsc-node__chip--purple { fill: rgba(139, 124, 240, 0.22); stroke: var(--dsc-purple); }
+.dsc-node__chip--mint { fill: rgba(125, 237, 237, 0.22); stroke: var(--dsc-mint); }
+.dsc-node__glyph { fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.dsc-node__glyph--blue { stroke: var(--dsc-blue); }
+.dsc-node__glyph--orange { stroke: var(--dsc-orange); }
+.dsc-node__glyph--purple { stroke: var(--dsc-purple); }
+.dsc-node__glyph--mint { stroke: var(--dsc-mint); }
+.dsc-node__title { fill: var(--dsc-on-dark); font-family: var(--font-dsc-display), "Hanken Grotesk", sans-serif; font-size: 12px; font-weight: 600; }
+.dsc-node__sub { fill: rgba(238, 243, 248, 0.5); font-family: var(--dsc-mono); font-size: 8px; letter-spacing: 0.02em; }
+.dsc-node__row { fill: rgba(238, 243, 248, 0.14); }
+.dsc-node__row--soft { fill: rgba(238, 243, 248, 0.08); }
+.dsc-wire { fill: none; stroke: rgba(238, 243, 248, 0.28); stroke-width: 2; }
+.dsc-wire__flow {
+  fill: none;
+  stroke: var(--dsc-mint);
+  stroke-width: 2;
+  stroke-dasharray: 5 9;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dsc-wire__flow { animation: dsc-dash 1.4s linear infinite; }
+}
+@keyframes dsc-dash { to { stroke-dashoffset: -14; } }
+.dsc-flow__packet { fill: var(--dsc-mint); }
+@media (prefers-reduced-motion: no-preference) {
+  .dsc-flow__packet { animation: dsc-travel 3.4s ease-in-out infinite; }
+}
+@keyframes dsc-travel {
+  0% { opacity: 0; }
+  6% { opacity: 1; }
+  94% { opacity: 1; }
+  100% { opacity: 0; }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(560px); }
+}
+
+/* ── Focus / proof cards ───────────────────────────────────── */
+.dsc-proof__group { margin-block-end: 38px; }
+.dsc-proof__group:last-of-type { margin-block-end: 0; }
+.dsc-proof__glabel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--dsc-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dsc-muted);
+  margin: 0 0 14px;
+}
+.dsc-proof__glabel::after {
+  content: '';
+  flex: 1;
+  block-size: 1px;
+  background: var(--dsc-line);
+}
+.dsc-proof__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+@media (max-width: 980px) { .dsc-proof__grid { grid-template-columns: 1fr; } }
+.dsc-root a.dsc-pcard,
+.dsc-pcard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--dsc-line);
+  border-radius: 20px;
+  background: var(--dsc-surface);
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.dsc-pcard:hover {
+  transform: translateY(-3px);
+  border-color: var(--dsc-line-2);
+  box-shadow: var(--dsc-shadow-soft);
+}
+.dsc-pcard__screen {
+  background:
+    radial-gradient(320px 150px at 68% 0%, rgba(26, 41, 66, 0.95), transparent 70%),
+    radial-gradient(280px 150px at 18% 100%, rgba(37, 55, 84, 0.85), transparent 72%),
+    var(--dsc-ink);
+  border-block-end: 1px solid var(--dsc-line);
+  padding: 18px;
+  display: grid;
+  place-items: center;
+}
+.dsc-pcard__body { padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.dsc-pcard__tag {
+  font-family: var(--dsc-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  color: var(--dsc-mint-ink);
+}
+.dsc-pcard__title { font-size: 1.16rem; font-weight: 600; margin: 0; }
+.dsc-pcard__desc { font-size: 0.9rem; line-height: 1.6; margin: 0; color: var(--dsc-body); }
+.dsc-pcard__link {
+  margin-block-start: auto;
+  padding-block-start: 8px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--dsc-ink);
+}
+.dsc-pcard:hover .dsc-pcard__link { color: var(--dsc-mint-ink); }
+.dsc-pcard--static:hover { transform: none; border-color: var(--dsc-line); box-shadow: none; }
+.dsc-pcard__link--muted {
+  color: var(--dsc-muted);
+  font-weight: 500;
+  font-size: 0.8rem;
+  font-family: var(--dsc-mono);
+}
+.dsc-pcard--static:hover .dsc-pcard__link--muted { color: var(--dsc-muted); }
+.dsc-proof__more { margin: 28px 0 0; font-size: 0.94rem; color: var(--dsc-muted); text-align: center; }
+.dsc-proof__more a { color: var(--dsc-mint-ink); font-weight: 600; }
+
+/* Proof visuals (inline SVG) — painted to the live palette on the dark screen */
+.dsc-vis { inline-size: 100%; max-inline-size: 220px; block-size: auto; }
+.dsc-vis__panel { fill: rgba(37, 55, 84, 0.4); stroke: rgba(238, 243, 248, 0.22); }
+.dsc-vis__line { fill: rgba(238, 243, 248, 0.5); }
+.dsc-vis__line--soft { fill: rgba(238, 243, 248, 0.22); }
+.dsc-vis__wire { stroke: rgba(238, 243, 248, 0.28); stroke-width: 2; }
+.dsc-vis__flow { stroke: var(--dsc-mint); stroke-width: 2; stroke-dasharray: 6 8; }
+.dsc-vis__pulse { fill: var(--dsc-mint); cx: 94px; cy: 60px; }
+@media (prefers-reduced-motion: no-preference) {
+  .dsc-vis__flow { animation: dsc-dash 1.4s linear infinite; }
+  .dsc-vis__pulse { animation: dsc-vtravel 2.2s ease-in-out infinite; }
+}
+@keyframes dsc-vtravel {
+  0%, 100% { transform: translateX(0); opacity: 0; }
+  15% { opacity: 1; }
+  50% { transform: translateX(34px); opacity: 1; }
+  65% { opacity: 0; }
+}
+.dsc-vis__glyphline { fill: none; stroke: var(--dsc-mint); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.dsc-vis__art { fill: rgba(125, 237, 237, 0.14); stroke: var(--dsc-mint); }
+.dsc-vis__art-bar { fill: var(--dsc-mint); opacity: 0.85; }
+.dsc-vis__chip { fill: rgba(238, 243, 248, 0.14); }
+.dsc-vis__chip--b { fill: rgba(125, 237, 237, 0.6); }
+.dsc-vis__edge { stroke: rgba(238, 243, 248, 0.28); stroke-width: 2; }
+.dsc-vis__edge--out { stroke: var(--dsc-mint); }
+.dsc-vis__worker rect { fill: rgba(37, 55, 84, 0.5); stroke: rgba(238, 243, 248, 0.24); }
+.dsc-vis__worker text {
+  fill: var(--dsc-on-dark-soft);
+  font-family: var(--dsc-mono);
+  font-size: 10px;
+  text-anchor: middle;
+}
+.dsc-vis__hub { fill: rgba(125, 237, 237, 0.22); stroke: var(--dsc-mint); stroke-width: 2; }
+.dsc-vis__hub-ring { fill: none; stroke: rgba(125, 237, 237, 0.4); stroke-width: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .dsc-vis__hub-ring { animation: dsc-ring 2.6s ease-out infinite; transform-origin: 110px 60px; }
+}
+@keyframes dsc-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+.dsc-vis__sink { fill: rgba(76, 127, 240, 0.28); stroke: var(--dsc-blue); }
+.dsc-vis__disc { fill: rgba(139, 124, 240, 0.28); stroke: var(--dsc-purple); }
+.dsc-vis__row { fill: rgba(238, 243, 248, 0.18); }
+.dsc-vis__row--play { fill: rgba(125, 237, 237, 0.8); }
+.dsc-vis__eq rect { fill: var(--dsc-mint); }
+@media (prefers-reduced-motion: no-preference) {
+  .dsc-vis__eq rect { animation: dsc-eq 1s ease-in-out infinite alternate; transform-origin: center bottom; }
+  .dsc-vis__eq rect:nth-child(2) { animation-delay: -0.3s; }
+  .dsc-vis__eq rect:nth-child(3) { animation-delay: -0.6s; }
+  .dsc-vis__eq rect:nth-child(4) { animation-delay: -0.15s; }
+}
+@keyframes dsc-eq { from { transform: scaleY(0.55); } to { transform: scaleY(1); } }
+
+/* ── Fit cards — the dark navy band (their dark sections) ───── */
+.dsc-section--dark {
+  background:
+    radial-gradient(52rem 30rem at 50% 0%, #16233a 0%, transparent 62%),
+    var(--dsc-ink);
+  color: var(--dsc-on-dark-soft);
+}
+.dsc-section--dark .dsc-kicker { color: var(--dsc-mint); }
+.dsc-root.mp-root .dsc-section--dark :where(h1, h2, h3, h4, h5, h6) {
+  color: var(--dsc-on-dark);
+}
+.dsc-section--dark .dsc-sub { color: var(--dsc-on-dark-soft); }
+.dsc-fit__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+@media (max-width: 860px) { .dsc-fit__grid { grid-template-columns: 1fr; } }
+.dsc-fcard {
+  position: relative;
+  border: 1px solid var(--dsc-dark-line);
+  border-radius: 20px;
+  background: rgba(37, 55, 84, 0.24);
+  padding: 26px 26px 24px;
+  overflow: hidden;
+}
+.dsc-fcard__no {
+  position: absolute;
+  inset-block-start: 18px;
+  inset-inline-end: 22px;
+  font-family: var(--dsc-mono);
+  font-size: 0.8rem;
+  color: rgba(238, 243, 248, 0.4);
+}
+.dsc-fcard__k { font-size: 1.16rem; font-weight: 600; margin: 0 0 8px; color: var(--dsc-on-dark); }
+.dsc-fcard__lead { font-weight: 600; color: var(--dsc-mint); font-size: 0.92rem; margin: 0 0 10px; }
+.dsc-fcard__body { font-size: 0.92rem; line-height: 1.65; margin: 0; color: var(--dsc-on-dark-soft); }
+
+/* ── Close band — dark, centred (their "get started" register) ── */
+.dsc-cta {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(46rem 26rem at 50% 46%, rgba(26, 41, 66, 0.95), transparent 66%),
+    radial-gradient(30rem 20rem at 78% 88%, rgba(125, 237, 237, 0.12), transparent 62%),
+    var(--dsc-ink);
+  padding-block: 108px;
+}
+.dsc-cta__inner {
+  position: relative;
+  max-inline-size: 860px;
+  margin-inline: auto;
+  padding-inline: 22px;
+  text-align: center;
+}
+.dsc-cta__mark { font-size: 44px; margin-inline: auto; margin-block-end: 20px; }
+.dsc-root.mp-root .dsc-cta :where(h2) { color: #fff; }
+.dsc-cta__title {
+  font-size: clamp(2.1rem, 4.6vw, 3.3rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin: 0 0 14px;
+}
+.dsc-cta__sub {
+  color: var(--dsc-on-dark-soft);
+  font-size: 1.06rem;
+  line-height: 1.6;
+  max-inline-size: 52ch;
+  margin: 0 auto 30px;
+}
+.dsc-cta__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+/* ── Footer — dark, columned ───────────────────────────────── */
+.dsc-footer { background: var(--dsc-ink); border-block-start: 1px solid var(--dsc-dark-line); }
+.dsc-footer__inner {
+  max-inline-size: 1160px;
+  margin-inline: auto;
+  padding: 56px 22px 40px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 32px;
+}
+@media (max-width: 860px) { .dsc-footer__inner { grid-template-columns: 1fr; } }
+.dsc-footer__mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-block-end: 14px;
+}
+.dsc-footer__tag {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--dsc-on-dark-soft);
+  max-inline-size: 42ch;
+  margin: 0;
+}
+.dsc-footer__h {
+  font-family: var(--dsc-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dsc-muted);
+  margin: 0 0 12px;
+}
+.dsc-footer__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.dsc-root a.dsc-footer__link,
+.dsc-footer__link {
+  color: var(--dsc-on-dark-soft);
+  text-decoration: none;
+  font-size: 0.92rem;
+  transition: color 0.18s ease;
+}
+.dsc-root a.dsc-footer__link:hover,
+.dsc-footer__link:hover { color: var(--dsc-mint); }
+.dsc-footer__bottom { border-block-start: 1px solid var(--dsc-dark-line); }
+.dsc-footer__bottom-inner {
+  max-inline-size: 1160px;
+  margin-inline: auto;
+  padding: 18px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--dsc-muted);
+}
+
+/* ── Focus visibility ──────────────────────────────────────── */
+.dsc-root :where(a, button):focus-visible {
+  outline: 2px solid var(--dsc-mint);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.dsc-section--dark :where(a, button):focus-visible,
+.dsc-hero :where(a, button):focus-visible,
+.dsc-cta :where(a, button):focus-visible {
+  outline-color: var(--dsc-mint);
+}
