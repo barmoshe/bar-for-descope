@@ -1,0 +1,50 @@
+/* =============================================================
+   descope-mcp.css — MCP-page-only additions on top of descope.css.
+   Imported only by DescopeMcpApp (the root "Senior Software Engineer, MCP"
+   page); the /fullstack page never loads it. All classes are additive and
+   scoped under `.dsc-root`, in the same live-read Descope palette.
+   ============================================================= */
+
+/* ── The JSON-RPC request strip (inside the flow panel) ────────── */
+.dsc-mcp-req {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-block-end: 1px solid var(--dsc-dark-line);
+  background: rgba(10, 16, 26, 0.4);
+  font-family: var(--dsc-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.01em;
+  color: var(--dsc-on-dark-soft);
+  white-space: nowrap;
+}
+.dsc-mcp-req__arrow { color: var(--dsc-mint); }
+.dsc-mcp-req__method { color: var(--dsc-on-dark); font-weight: 600; }
+.dsc-mcp-req__key { color: rgba(238, 243, 248, 0.55); }
+.dsc-mcp-req__val { color: var(--dsc-blue); }
+.dsc-mcp-req__sep { color: rgba(238, 243, 248, 0.3); }
+.dsc-mcp-req__ok {
+  color: var(--dsc-mint-ink);
+  background: rgba(125, 237, 237, 0.18);
+  border: 1px solid rgba(125, 237, 237, 0.35);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+@media (max-width: 560px) {
+  .dsc-mcp-req { font-size: 0.68rem; gap: 6px; }
+}
+
+/* ── The mint dot inside the Descope hexagon-key node glyph ────── */
+.dsc-mcp-key { fill: var(--dsc-mint); }
+
+/* ── Per-segment auth labels on the connector wires ───────────── */
+.dsc-mcp-seg {
+  fill: var(--dsc-mint);
+  font-family: var(--dsc-mono);
+  font-size: 8px;
+  letter-spacing: 0.04em;
+  text-anchor: middle;
+  opacity: 0.85;
+}

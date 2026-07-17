@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
-import DescopeMcpApp from "@/src/marketing/descope/DescopeMcpApp";
+import DescopeApp from "@/src/marketing/descope/DescopeApp";
 
 // Type trio for the Descope application page, matched to the live site:
 // descope.com sets display + body in Roobert (commercial). Hanken Grotesk is
@@ -26,16 +26,19 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
-// Ad-hoc, personalized application page for Bar Moshe's "Senior Software
-// Engineer, MCP" application to Descope (Tel Aviv, hybrid) — a SECOND, distinct
-// Descope role. Same live-read Descope brand as the /fullstack page; the pitch
-// is MCP-forward, with an MCP auth-handshake centerpiece (agent -> Descope
-// identity gate -> MCP server), the exact surface this role owns. Standalone
-// sibling. Noindex, a private shareable link for the Descope team. The
-// full-stack application page lives at /fullstack.
-const ogTitle = "Bar Moshe × Descope — Senior Software Engineer, MCP";
+// Ad-hoc, personalized application page for Bar Moshe's "Full-Stack Software
+// Engineer" application to Descope (Tel Aviv, hybrid). Speaks Descope's own
+// language (developer-first customer + agentic identity: visual identity
+// journeys, MFA/SSO, MCP-server and AI-agent auth) and makes the case for Bar
+// inside it. Standalone sibling built in Descope's real brand, read live off
+// descope.com. Noindex, a private shareable link for the Descope team.
+//
+// Moved from "/" to "/fullstack" on 2026-07-17 when the root became the second
+// Descope role Bar applied to (Senior Software Engineer, MCP). Same brand, same
+// DescopeApp component; only the route changed.
+const ogTitle = "Bar Moshe × Descope — Full-Stack Software Engineer";
 const ogDescription =
-  "Bar Moshe for Descope's MCP team. I build MCP servers: MDP on npm ships its own MCP server, plus durable agent pipelines on Temporal across Go, Python, and TypeScript. Every project link is live.";
+  "Bar Moshe, a full-stack software engineer in Tel Aviv. React, Next.js, TypeScript, Node; open-source developer tooling on npm with an MCP server; featured on Temporal's Code Exchange.";
 
 // noindex (private, shareable link) but a rich share card still renders for
 // direct shares (email / DM / LinkedIn); og:image comes from the colocated
@@ -60,10 +63,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DescopeMcpPage() {
+export default function DescopeFullstackPage() {
   return (
     <div className={`${display.variable} ${body.variable} ${mono.variable}`}>
-      <DescopeMcpApp />
+      <DescopeApp />
     </div>
   );
 }

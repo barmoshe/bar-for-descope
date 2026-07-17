@@ -1,15 +1,15 @@
 import { ImageResponse } from 'next/og';
 
-// Dynamic share card for the root Descope application page (Senior Software
-// Engineer, MCP), matching the page's look — Descope's real brand, read live
-// off descope.com: near-black navy surface (#0A101A) with a radial glow, white
-// display type at weight 500, a mint (#7DEDED) hexagon-key mark and CTA pill.
-// Rendered at build time by next/og (Satori), so it uses a flexbox-only subset
-// of CSS and plain hex colours (Latin text only). Next colocates this file with
-// the route and wires the og:image / twitter:image tags automatically.
+// Dynamic share card for the /fullstack Descope application page, matching the
+// page's look — Descope's real brand, read live off descope.com: near-black
+// navy surface (#0A101A) with a radial glow, white display type at weight 500,
+// a mint (#7DEDED) hexagon-key mark and CTA pill. Rendered at build time by
+// next/og (Satori), so it uses a flexbox-only subset of CSS and plain hex
+// colours (Latin text only). Next colocates this file with the route and wires
+// the og:image / twitter:image tags automatically.
 
 export const alt =
-  'Bar Moshe for Descope — Senior Software Engineer, MCP. I build MCP servers: MDP on npm ships its own MCP server, plus durable agent pipelines on Temporal.';
+  'Bar Moshe for Descope — Full-Stack Software Engineer. React, Next.js, TypeScript, Node; open-source developer tooling on npm with an MCP server.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -61,7 +61,7 @@ export default function Image() {
               color: '#7deded',
             }}
           >
-            for Descope · MCP
+            for Descope · Application
           </div>
         </div>
 
@@ -78,10 +78,10 @@ export default function Image() {
               maxWidth: '1010px',
             }}
           >
-            I build MCP servers.
+            Full-stack software engineer.
           </div>
           <div style={{ display: 'flex', fontSize: 29, color: 'rgba(238,243,248,0.72)', marginTop: '22px', maxWidth: '960px', lineHeight: 1.35 }}>
-            MDP on npm ships its own MCP server; durable agent pipelines on Temporal across Go, Python, and TypeScript. Securing those calls with identity is the job.
+            React, Next.js, TypeScript, Node. Open-source tooling on npm with an MCP server, featured on Temporal Code Exchange.
           </div>
         </div>
 
@@ -99,7 +99,7 @@ export default function Image() {
               color: '#0a3b3b',
             }}
           >
-            Senior Software Engineer, MCP · Tel Aviv
+            Full-Stack Software Engineer · Tel Aviv
           </div>
         </div>
       </div>
